@@ -29,8 +29,8 @@ class MainActivity : AppCompatActivity() {
         val teito = findViewById<TextView>(R.id.teito)
         var entrada:String = ""
         var first:String = ""
-        var num1: Int = 0
-        var op: Char = '0'
+        var num1: MutableList<Int> = ArrayList()
+        var op: MutableList<Char> = ArrayList()
         n1.setOnClickListener {
             entrada += "1"
             teito.text = entrada
@@ -82,33 +82,38 @@ class MainActivity : AppCompatActivity() {
 
         }
         bSum.setOnClickListener {
-            entrada += "+"
-            teito.text = entrada
+            if(entrada != ""){
+
+                entrada += "+"
+                teito.text = entrada
+            }
 
         }
         bSus.setOnClickListener {
-            entrada += "-"
-            teito.text = entrada
+            if(entrada != ""){
 
+                entrada += "-"
+                teito.text = entrada
+            }
         }
         bTimes.setOnClickListener {
-            entrada += "x"
-            teito.text = entrada
+            if(entrada != ""){
 
+                entrada += "x"
+                teito.text = entrada
+            }
         }
         bDiv.setOnClickListener {
-            entrada += "/"
-            teito.text = entrada
+            if(entrada != ""){
 
+                entrada += "/"
+                teito.text = entrada
+            }
         }
         bEq.setOnClickListener {
             for (k in entrada){
 
-                if (k == '+'){
-                    num1 = first.toInt()
-                    op = '+'
 
-                }
 
                 when(k){
                     '1' -> first += "1"
@@ -122,50 +127,66 @@ class MainActivity : AppCompatActivity() {
                     '9' -> first += "9"
                     '0' -> first += "0"
                     '+' -> {
-                        num1 = first.toInt()
-                        op = '+'
+                        num1.add(first.toInt())
+                        op.add('+')
                         first=""
                     }
                     '-' -> {
-                        num1 = first.toInt()
-                        op = '-'
+                        num1.add(first.toInt())
+                        op.add('-')
                         first=""
                     }
                     'x' -> {
-                        num1 = first.toInt()
-                        op = 'x'
+                        num1.add(first.toInt())
+                        op.add('x')
                         first=""
                     }
                     '/' -> {
-                        num1 = first.toInt()
-                        op = '/'
+                        num1.add(first.toInt())
+                        op.add('/')
                         first=""
                     }
 
 
                 }
             }
-            when(op){
-                '+' -> {
-                    var res = (num1 + first.toInt())
-                    teito.text = res.toString()
-                }
-                '-' -> {
-                    var res = (num1 - first.toInt())
-                    teito.text = res.toString()
-                }
-                'x' -> {
-                    var res = (num1 * first.toInt())
-                    teito.text = res.toString()
-                }
-                '/' -> {
-                    var res = (num1.toDouble() / first.toDouble()).toDouble()
-                    teito.text = res.toString()
-                }
+            num1.add(first.toInt())
+
+            var res:Double = num1.get(0).toDouble()
+            for ((i, value) in num1.withIndex()){
+
+                if (i != op.size) {
+                    when(op.get(i)){
+                        '+' -> {
+                            if (i+1 != num1.size){
+                                res = (res + num1.get(i+1))
+                            }
+
+                        }
+                        '-' -> {
+                            if (i+1 != num1.size){
+                                res = (res - num1.get(i+1))
+                            }
+                        }
+                        'x' -> {
+                            if (i+1 != num1.size){
+                                res = (res * num1.get(i+1))
+                            }
+                        }
+                        '/' -> {
+                            if (i+1 != num1.size){
+                                res = (res.toDouble() / num1.get(i+1).toDouble())
+
+                            }
+                        }
+
+                    }
+                } else{teito.text = res.toString()}
 
             }
             entrada = ""
-            num1 = 0
+            num1.clear()
+            op.clear()
             first = ""
 
         }
